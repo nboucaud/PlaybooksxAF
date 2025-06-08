@@ -18,6 +18,10 @@ COPY ./packages/frontend /frontend
 # Set working directory to frontend monorepo root
 WORKDIR /frontend
 
+COPY package.json yarn.lock ./
+COPY component ./component
+COPY core ./core
+COPY env ./env    
 # Install all dependencies via Yarn (resolves workspaces correctly)
 RUN yarn install
 
