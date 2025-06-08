@@ -8,15 +8,14 @@
     "apps/mobile",
     "admin",
     "component",
-    "core"
+    "core",
+    "common/env"
   ],
-  "dependencies": {
-    "@affine/env": "file:../common/env"
-  },
   "scripts": {
-    "build:web": "cd apps/web && yarn install && yarn build",
-    "build:admin": "cd admin && yarn install && yarn build",
-    "build:mobile": "cd apps/mobile && yarn install && yarn build",
+    "build:web": "yarn workspace web build",
+    "build:admin": "yarn workspace admin build",
+    "build:mobile": "yarn workspace mobile build",
     "build:all": "yarn build:web && yarn build:admin && yarn build:mobile"
   }
 }
+
