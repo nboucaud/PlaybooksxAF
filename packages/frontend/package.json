@@ -1,0 +1,19 @@
+{
+  "name": "frontend-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/web",
+    "admin",
+    "apps/mobile"
+  ],
+  "scripts": {
+    "build:web": "npm run build --workspace=apps/web",
+    "build:admin": "npm run build --workspace=admin",
+    "build:mobile": "npm run build --workspace=apps/mobile",
+    "build:all": "npm run build:web && npm run build:admin && npm run build:mobile"
+  },
+  "devDependencies": {
+    // You can add dev dependencies common to all workspaces here if any
+  }
+}
