@@ -18,7 +18,7 @@ COPY packages ./packages
 # Install dependencies stage
 FROM base AS deps
 
-RUN npm ci
+RUN npm install
 
 # ========================
 # Build frontend apps stage
