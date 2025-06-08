@@ -8,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy root files for all stages
-COPY package.json package-lock.json ./
+COPY package.json 
 
 COPY blocksuite ./blocksuite
 COPY tools ./tools
