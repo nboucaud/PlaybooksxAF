@@ -12,8 +12,14 @@ RUN apt-get update && \
 # Copy monorepo root files (package.json, yarn.lock, and yarn config)
 COPY ./package.json ./yarn.lock ./
 
-# Copy all packages (frontend, backend, common)
-COPY ./packages ./packages
+# Copy root package files first
+COPY package.json yarn.lock ./
+
+# Copy blocksuite folder (important!)
+COPY blocksuite ./blocksuite
+
+# Copy other folders
+COPY packages ./packages
 
 # Install dependencies for all workspaces from root
 RUN yarn install
