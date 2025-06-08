@@ -15,7 +15,6 @@ COPY ./package.json ./yarn.lock ./
 # Copy all packages (frontend, backend, common)
 COPY ./packages ./packages
 
-COPY --from=blocksuite /blocksuite ./blocksuite
 # Install dependencies for all workspaces from root
 RUN yarn install --immutable
 
