@@ -17,7 +17,7 @@ COPY package.json yarn.lock ./
 
 # Copy blocksuite folder (important!)
 COPY blocksuite ./blocksuite
-
+COPY tools ./tools 
 # Copy other folders
 COPY packages ./packages
 
