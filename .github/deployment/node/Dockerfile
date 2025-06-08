@@ -35,3 +35,5 @@ RUN mkdir -p /app/static /app/static/admin /app/static/mobile && \
 RUN cd /app && npm install
 
 CMD ["node", "./dist/main.js"]
+
+
