@@ -16,7 +16,7 @@ COPY ./package.json ./yarn.lock ./
 COPY ./packages ./packages
 
 # Install dependencies for all workspaces from root
-RUN yarn install --immutable
+RUN yarn install
 
 # Build frontend apps using workspace commands
 RUN yarn workspace apps/web build
