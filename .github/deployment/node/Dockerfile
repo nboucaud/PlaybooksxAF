@@ -1,39 +1,40 @@
 FROM node:22-bookworm-slim
 
+# Set working directory for backend
 WORKDIR /app
 
-# Install openssl and clean up
+# Install OS dependencies and Yarn via Corepack
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends openssl && \
+    apt-get install -y --no-install-recommends curl && \
+    corepack enable && corepack prepare yarn@stable --activate && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy backend source code
 COPY ./packages/backend/server /app
 
-# Copy frontend monorepo root (assuming package.json and workspaces config are inside frontend folder)
+# Copy frontend monorepo (root includes package.json and workspace config)
 COPY ./packages/frontend /frontend
 
-# Upgrade npm to latest to ensure workspace and modern package support
-RUN npm install -g npm@latest
+# Set working directory to frontend monorepo root
+WORKDIR /frontend
 
-# Install frontend dependencies in the monorepo context
-RUN cd /frontend && npm install
+# Install all dependencies via Yarn (resolves workspaces correctly)
+RUN yarn install
 
-# Build each frontend app inside the monorepo
-# For each frontend app, install dependencies and build separately
-RUN cd /frontend/apps/web && npm install && npm run build && \
-    cd ../../admin && npm install && npm run build && \
-    cd ../apps/mobile && npm install && npm run build
+# Build all apps via yarn scripts
+RUN yarn build:all
 
-# Copy built dist folders to backend static folder
+# Copy built frontend assets to backend static folder
 RUN mkdir -p /app/static /app/static/admin /app/static/mobile && \
-    cp -r /frontend/apps/web/dist /app/static && \
-    cp -r /frontend/admin/dist /app/static/admin && \
-    cp -r /frontend/apps/mobile/dist /app/static/mobile
+    cp -r apps/web/dist /app/static && \
+    cp -r admin/dist /app/static/admin && \
+    cp -r apps/mobile/dist /app/static/mobile
 
-# Install backend dependencies if needed
-RUN cd /app && npm install
+# Switch back to backend dir and install backend dependencies
+WORKDIR /app
+RUN yarn install
 
+# Run the backend
 CMD ["node", "./dist/main.js"]
 
 
