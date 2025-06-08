@@ -8,10 +8,9 @@
     "apps/mobile"
   ],
   "scripts": {
-    "build:web": "npm run build --workspace=apps/web",
-    "build:admin": "npm run build --workspace=admin",
-    "build:mobile": "npm run build --workspace=apps/mobile",
-    "build:all": "npm run build:web && npm run build:admin && npm run build:mobile"
-  },
-  "devDependencies": {}
+    "build:web": "cd apps/web && yarn install && yarn build",
+    "build:admin": "cd admin && yarn install && yarn build",
+    "build:mobile": "cd apps/mobile && yarn install && yarn build",
+    "build:all": "yarn build:web && yarn build:admin && yarn build:mobile"
+  }
 }
