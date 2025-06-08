@@ -9,40 +9,38 @@ RUN apt-get update && \
     corepack enable && corepack prepare yarn@stable --activate && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy entire monorepo root (adjust path as needed)
-# Assume your repo has this structure:
-# /package.json (with workspaces)
-# /packages/frontend
-# /packages/backend/server
-# /packages/common/env
+# Copy monorepo root files (package.json, yarn.lock, and yarn config)
+COPY ./package.json ./yarn.lock ./
 
-COPY ./package.json ./yarn.lock ./  # copy root package files
-COPY ./packages ./packages           # copy all packages including frontend, backend, common
+# Copy all packages (frontend, backend, common)
+COPY ./packages ./packages
 
 # Install dependencies for all workspaces from root
-RUN yarn install
+RUN yarn install --immutable
 
-# Build all frontend apps (adjust script names if needed)
+# Build frontend apps using workspace commands
 RUN yarn workspace apps/web build
 RUN yarn workspace admin build
 RUN yarn workspace apps/mobile build
 
-# Copy backend source to /app/backend for clarity (optional)
+# Prepare backend directory and copy backend source
 RUN mkdir -p /app/backend
 RUN cp -r packages/backend/server/* /app/backend/
 
-# Install backend dependencies (if backend uses separate dependencies)
+# Change working directory to backend for installing backend-specific dependencies
 WORKDIR /app/backend
-RUN yarn install
+
+# Install backend dependencies
+RUN yarn install --immutable
 
 # Copy built frontend assets to backend static folder
-RUN mkdir -p /app/backend/static /app/backend/static/admin /app/backend/static/mobile && \
-    cp -r ../packages/frontend/apps/web/dist /app/backend/static && \
-    cp -r ../packages/frontend/admin/dist /app/backend/static/admin && \
-    cp -r ../packages/frontend/apps/mobile/dist /app/backend/static/mobile
+RUN mkdir -p static static/admin static/mobile && \
+    cp -r ../packages/frontend/apps/web/dist static/ && \
+    cp -r ../packages/frontend/admin/dist static/admin/ && \
+    cp -r ../packages/frontend/apps/mobile/dist static/mobile/
 
-# Set workdir for running backend
-WORKDIR /app/backend
+# Expose backend port if needed (adjust port accordingly)
+# EXPOSE 3000
 
 # Start backend server
 CMD ["node", "./dist/main.js"]
