@@ -1,6 +1,6 @@
 FROM node:22-bookworm-slim
 
-# Set working directory for backend
+# Set working directory to /app (monorepo root inside container)
 WORKDIR /app
 
 # Install OS dependencies and Yarn via Corepack
@@ -9,34 +9,40 @@ RUN apt-get update && \
     corepack enable && corepack prepare yarn@stable --activate && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy backend source code
-COPY ./packages/backend/server /app
+# Copy entire monorepo root (adjust path as needed)
+# Assume your repo has this structure:
+# /package.json (with workspaces)
+# /packages/frontend
+# /packages/backend/server
+# /packages/common/env
 
-# Copy frontend monorepo (root includes package.json and workspace config)
-COPY ./packages/frontend /frontend
+COPY ./package.json ./yarn.lock ./  # copy root package files
+COPY ./packages ./packages           # copy all packages including frontend, backend, common
 
-COPY ./packages/common/env /common/env
-
-# Set working directory to frontend monorepo root
-WORKDIR /frontend
-
-# Install all dependencies via Yarn (resolves workspaces correctly)
+# Install dependencies for all workspaces from root
 RUN yarn install
 
-# Build all apps via yarn scripts
-RUN yarn build:all
+# Build all frontend apps (adjust script names if needed)
+RUN yarn workspace apps/web build
+RUN yarn workspace admin build
+RUN yarn workspace apps/mobile build
+
+# Copy backend source to /app/backend for clarity (optional)
+RUN mkdir -p /app/backend
+RUN cp -r packages/backend/server/* /app/backend/
+
+# Install backend dependencies (if backend uses separate dependencies)
+WORKDIR /app/backend
+RUN yarn install
 
 # Copy built frontend assets to backend static folder
-RUN mkdir -p /app/static /app/static/admin /app/static/mobile && \
-    cp -r apps/web/dist /app/static && \
-    cp -r admin/dist /app/static/admin && \
-    cp -r apps/mobile/dist /app/static/mobile
+RUN mkdir -p /app/backend/static /app/backend/static/admin /app/backend/static/mobile && \
+    cp -r ../packages/frontend/apps/web/dist /app/backend/static && \
+    cp -r ../packages/frontend/admin/dist /app/backend/static/admin && \
+    cp -r ../packages/frontend/apps/mobile/dist /app/backend/static/mobile
 
-# Switch back to backend dir and install backend dependencies
-WORKDIR /app
-RUN yarn install
+# Set workdir for running backend
+WORKDIR /app/backend
 
-# Run the backend
+# Start backend server
 CMD ["node", "./dist/main.js"]
-
-
