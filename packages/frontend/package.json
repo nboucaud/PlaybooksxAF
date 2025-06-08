@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "packageManager": "yarn@4.9.2",
   "workspaces": [
-    "apps/*",
+    "apps/web",
+    "apps/mobile",
     "admin",
-    "packages/*"
+    "component"  
   ],
   "scripts": {
     "build:web": "cd apps/web && yarn install && yarn build",
