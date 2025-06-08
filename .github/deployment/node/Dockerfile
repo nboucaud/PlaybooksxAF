@@ -10,7 +10,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy monorepo root files (package.json, yarn.lock, and yarn config)
-COPY ./package.json ./yarn.lock ./
+COPY package.json yarn.lock ./
+COPY .yarn .yarn
+COPY .yarnrc.yml .yarnrc.yml
 
 # Copy root package files first
 COPY package.json yarn.lock ./
