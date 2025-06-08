@@ -14,7 +14,7 @@ COPY ./packages/backend/server /app
 COPY ./packages/frontend /frontend
 
 # Upgrade npm to latest to ensure workspace and modern package support
-RUN npm install -g npm@latest
+#RUN npm install -g npm@latest
 
 # Install frontend dependencies in the monorepo context
 #RUN cd /frontend && npm install
