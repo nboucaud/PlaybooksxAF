@@ -15,6 +15,8 @@ COPY ./packages/backend/server /app
 # Copy frontend monorepo (root includes package.json and workspace config)
 COPY ./packages/frontend /frontend
 
+COPY common/env ./common/env
+
 # Set working directory to frontend monorepo root
 WORKDIR /frontend
 
