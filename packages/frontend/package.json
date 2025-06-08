@@ -8,7 +8,8 @@
     "apps/mobile",
     "admin",
     "component",
-    "core"    
+    "core",
+    "env"
   ],
   "scripts": {
     "build:web": "cd apps/web && yarn install && yarn build",
