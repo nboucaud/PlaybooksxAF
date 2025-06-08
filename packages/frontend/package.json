@@ -9,7 +9,7 @@
     "admin",
     "component",
     "core",
-    "env"
+    "/common/env"
   ],
   "scripts": {
     "build:web": "cd apps/web && yarn install && yarn build",
