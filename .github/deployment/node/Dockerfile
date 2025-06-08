@@ -17,21 +17,21 @@ COPY ./packages/frontend /frontend
 RUN npm install -g npm@latest
 
 # Install frontend dependencies in the monorepo context
-RUN cd /frontend && npm install
+#RUN cd /frontend && npm install
 
 # Build each frontend app inside the monorepo
-RUN cd /frontend/apps/web && npm run build && \
-    cd ../../admin && npm run build && \
-    cd ../apps/mobile && npm run build
+# For each frontend app, install dependencies and build separately
+RUN cd /frontend/apps/web && npm install && npm run build && \
+    cd ../../admin && npm install && npm run build && \
+    cd ../apps/mobile && npm install && npm run build
 
-# Create backend static folders and copy frontend build artifacts
-RUN mkdir -p /app/static/web /app/static/admin /app/static/mobile && \
-    cp -r /frontend/apps/web/dist /app/static/web && \
+# Copy built dist folders to backend static folder
+RUN mkdir -p /app/static /app/static/admin /app/static/mobile && \
+    cp -r /frontend/apps/web/dist /app/static && \
     cp -r /frontend/admin/dist /app/static/admin && \
     cp -r /frontend/apps/mobile/dist /app/static/mobile
 
-# Install backend dependencies
+# Install backend dependencies if needed
 RUN cd /app && npm install
 
-# Run the backend server
 CMD ["node", "./dist/main.js"]
