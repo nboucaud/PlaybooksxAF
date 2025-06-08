@@ -2,10 +2,11 @@
   "name": "frontend-monorepo",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "yarn@4.9.2",
   "workspaces": [
-    "apps/web",
+    "apps/*",
     "admin",
-    "apps/mobile"
+    "packages/*"
   ],
   "scripts": {
     "build:web": "cd apps/web && yarn install && yarn build",
